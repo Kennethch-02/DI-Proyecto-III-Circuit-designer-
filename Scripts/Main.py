@@ -3,58 +3,11 @@ import sys
 from Clases import *
 from threading import Thread
 
+#/____________________________________________________________________________________________________________________
+#/_________________________________________Funciones__________________________________________________________________
+
 def Main():
-    pygame.init()
-    WIDTH = 500
-    HEIGHT = 400
-    cursor = Cursor()
-    pantalla = Pantalla(WIDTH-2, HEIGHT-2)
-    SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_caption('My Game')
-
-    RED = (255, 0, 0)
-    WHITE = (255, 255, 255)
-    BLACK = (0, 0, 0)
-    RED = (255, 0, 0)
-    GREEN = (0, 255, 0)
-    BLUE = (0, 0, 255)
-    YELLOW = (255, 255, 255)
-
-    line = Line_(SCREEN, BLACK, 10, 10, 100, 5)
-    Lista = pygame.sprite.Group()
-    Lista.add(line)
-    is_running = True
-    is_down = False
-    SCREEN.fill(GREEN)
-    # /_____________________________________________________________________________________________________________
-    # /_________________________________________CODIGO MONTSE_______________________________________________________
-
-    # /_____________________________________________________________________________________________________________
-    # /_________________________________________Clases______________________________________________________________
-
-    class cursor(pygame.Rect):  # Solo es un rectangulo que sigue al cursor
-        def __init__(self):
-            pygame.Rect.__init__(self, 0, 0, 1, 1)
-
-        def update(self):  # actualiza constantemente la posicion
-            self.left, self.top = pygame.mouse.get_pos()
-
-    class boton(pygame.sprite.Sprite):  # tiene dos imagenes que seran el boton
-        def __init__(self, imagen1, imagen2, x=300, y=70):
-            self.imagen_normal = imagen1
-            self.imagen_selec = imagen2
-            self.imagen_actual = self.imagen_normal
-            self.rect = self.imagen_actual.get_rect()
-            self.rect.topleft = (x, y)
-
-        def update(self, pantalla, cursor):
-            if cursor.colliderect(self.rect):
-                self.imagen_actual = self.imagen_selec
-            else:
-                self.imagen_actual = self.imagen_normal
-            pantalla.blit(self.imagen_actual, self.rect)
-
-
+    #Variables Ventana
     pygame.init()
     pantalla = pygame.display.set_mode([800,600])
     pygame.display.set_caption('Inicio')
@@ -74,11 +27,11 @@ def Main():
     boton2 = boton(boton_sim1, boton_sim2,300,120)
     cursor1 = cursor()
 
-    # /_________________________________________________________________________________________________________________
-    # /_________________________________________VENTANA INDICACIONES____________________________________________________
+#/____________________________________________________________________________________________________________________
+#/_________________________________________VENTANA INDICACIONES_______________________________________________________
 
-    def Indicaciones():
-        # Variables de la ventana
+    def Indicaciones ():
+        #Variables de la ventana
         pygame.init()
         pantalla = pygame.display.set_mode([800, 600])
         pygame.display.set_caption('Inicio')
@@ -89,17 +42,17 @@ def Main():
         colorfondo = blanco
         fuente = pygame.font.SysFont("Javanese text", 45)
         texto = fuente.render("Indicaciones", True, negro)  # Texto de bienvenida
-        # Variables del Boton
-        boton_a2 = pygame.image.load("./boton_atras.gif")
-        boton_a3 = pygame.image.load("./boton_atras.gif")
-        boton_atras = boton(boton_a3, boton_a2, 590, 400)  # cambia la posicion del boton
+        #Variables del Boton
+        boton_a2= pygame.image.load("./boton_atras.gif")
+        boton_a3 = pygame.image.load ("./boton_atras.gif")
+        boton_atras = boton(boton_a3,boton_a2,590,400) #cambia la posicion del boton
         cursor1 = cursor()
-        # Ciclo de la ventana
+        #Ciclo de la ventana
         while salir != True:
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if cursor1.colliderect(boton_atras.rect):
-                        return Main()
+                        return main()
                 if event.type == pygame.QUIT:
                     salir = True
                     sys.exit()
@@ -111,74 +64,66 @@ def Main():
             pygame.display.update()
         Indicaciones()
 
-        # /_____________________________________________________________________________________________________________
-        # /_________________________________________VENTANA SIMULADOR___________________________________________________
+# /____________________________________________________________________________________________________________________
+# /_________________________________________VENTANA INDICACIONES_______________________________________________________
 
-        def Simulador():
-            # Variables de la ventana
-            pygame.init()
-            pantalla = pygame.display.set_mode([800, 600])
-            pygame.display.set_caption('Inicio')
-            salir = False
-            blanco = (255, 255, 255)
-            negro = (0, 0, 0)
-            rojo = (200, 0, 0)
-            colorfondo = blanco
-            fuente = pygame.font.SysFont("Javanese text", 45)
-            texto = fuente.render("Simula", True, negro)  # Texto de bienvenida
-            # Variables del boton
-            boton_as1 = pygame.image.load("./boton_atras.gif")
-            boton_as2 = pygame.image.load("./boton_atras.gif")
-            boton_atras_sim = boton(boton_as1, boton_as2, 590, 400)  # cambia la posicion del boton
-            cursor1 = cursor()
-            # ciclo de la ventana
-            while salir != True:
-                for event in pygame.event.get():
-                    if event.type == pygame.MOUSEBUTTONDOWN:
-                        if cursor1.colliderect(boton_atras_sim.rect):
-                            return Main()
-                    elif event.type == pygame.QUIT:
-                        salir = True
-                        sys.exit()
-
-                # actualizaciones e impresiones del trabajo
-                pantalla.fill(colorfondo)
-                pantalla.blit(texto, (340, 40))  # Texto de bienvenida
-                cursor1.update()
-                boton_atras_sim.update(pantalla, cursor1)
-                pygame.display.update()
-            Simulador()
+    def Simulador ():
+        #Variables de la ventana
+        pygame.init()
+        pantalla = pygame.display.set_mode([800, 600])
+        pygame.display.set_caption('Inicio')
+        salir = False
+        blanco = (255, 255, 255)
+        negro = (0, 0, 0)
+        rojo = (200, 0, 0)
+        colorfondo = blanco
+        fuente = pygame.font.SysFont("Javanese text", 45)
+        texto = fuente.render("Simula", True, negro)  # Texto de bienvenida
+        #Variables del boton
+        boton_as1 = pygame.image.load ("./boton_atras.gif")
+        boton_as2 = pygame.image.load("./boton_atras.gif")
+        boton_atras_sim = boton(boton_as1,boton_as2,590,400) #cambia la posicion del boton
+        cursor1 = cursor()
+        #ciclo de la ventana
+        while salir != True:
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if cursor1.colliderect(boton_atras_sim.rect):
+                        return main()
+                elif event.type == pygame.QUIT:
+                    salir = True
+                    sys.exit()
 
 
-    while is_running:
-        pygame.display.update()
-        cursor.update()
-        SCREEN.fill(GREEN)
-        for e in Lista:
-            e.Draw()
+            # actualizaciones e impresiones del trabajo
+            pantalla.fill(colorfondo)
+            pantalla.blit(texto, (340, 40))  # Texto de bienvenida
+            cursor1.update()
+            boton_atras_sim.update(pantalla, cursor1)
+            pygame.display.update()
+        Simulador()
+
+# /____________________________________________________________________________________________________________________
+# /_________________________________________Ciclo Main_________________________________________________________________
+
+    while salir != True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                is_running = False
+                salir = True
+                sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                is_down = True
-                a = pygame.sprite.spritecollide(Cursor_sprite(cursor), Lista, False, False)
-                print(a)
                 if cursor1.colliderect(boton1.rect):
                     return Indicaciones()
                 elif cursor1.colliderect(boton2.rect):
                     return Simulador()
-            if event.type == pygame.MOUSEBUTTONUP:
-                is_down = False
-        if is_down:
-            for sprite in a:
-                sprite.set_pos(pygame.mouse.get_pos())
 
-    pantalla.fill(colorfondo)
-    pantalla.blit(texto, (220, 70))
-    cursor1.update()
-    boton1.update(pantalla, cursor1)
-    boton2.update(pantalla, cursor1)
-    pygame.display.update()
+        #actualizaciones e impresiones del trabajo
+        pantalla.fill(colorfondo)
+        pantalla.blit(texto, (220,70))
+        cursor1.update()
+        boton1.update(pantalla, cursor1)
+        boton2.update(pantalla, cursor1)
+        pygame.display.update()
     pygame.quit()
 
 t = Thread(target=Main)

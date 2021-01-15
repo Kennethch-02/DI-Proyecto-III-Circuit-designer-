@@ -1,4 +1,5 @@
 import pygame
+
 class Pantalla(pygame.Rect):
     def __init__(self, w, h):
         pygame.Rect.__init__(self, 1, 1, w, h)
@@ -51,7 +52,6 @@ class Line_(pygame.sprite.Sprite):
         self.line.set_pos(pos)
     def get_rect(self):
         return self.line
-
 #/____________________________________________________________________________________________________________________
 #/_________________________________________Clases_____________________________________________________________________
 
@@ -73,3 +73,6 @@ class boton(pygame.sprite.Sprite):#tiene dos imagenes que seran el boton
             self.imagen_actual = self.imagen_selec
         else: self.imagen_actual = self.imagen_normal
         pantalla.blit (self.imagen_actual, self.rect)
+
+
+
