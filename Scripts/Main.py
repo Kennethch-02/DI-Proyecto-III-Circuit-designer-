@@ -65,23 +65,33 @@ def Simulador():
 
     boton_a2 = pygame.image.load("./boton_atras.gif")
     boton_a3 = pygame.image.load("./boton_atras.gif")
+    IMG_B_Up = pygame.image.load("./arrow_up.png")
+    IMG_B_up = pygame.image.load("./arrow_u.png")
     boton_atras = boton(boton_a3, boton_a2, 590, 400)  # cambia la posicion del boton
 
-    line = Line_(pantalla, BLACK, 10, 10, 100, 5)
+    line = Line_(pantalla, BLACK, 10, 400, 100, 5)
     Lista = pygame.sprite.Group()
     Lista.add(line)
     is_running = True
     is_down = False
+    menu = Bar_Menu(0,0)
     pantalla.fill(GREEN)
+    for i in range(10):
+        a = Dynamic_Button(IMG_B_Up, IMG_B_up, 25, 25, 50,50)
+        menu.add_button(a)
+
+    print(9//8)
     while is_running:
         pantalla.fill(WHITE)
         cursor1.update()
         Lista.update()
+        menu.update(pantalla, cursor1)
         boton_atras.update(pantalla, cursor1)
         for sprite in Lista:
             sprite.Draw()
         pygame.display.update()
         for event in pygame.event.get():
+            menu.event(event, cursor1)
             if event.type == pygame.QUIT:
                 is_running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -133,7 +143,7 @@ def Main():
                 if cursor1.colliderect(boton1.rect):
                     return Indicaciones()
                 elif cursor1.colliderect(boton2.rect):
-                    return Simulador()
+                    return  Simulador()
 
         #actualizaciones e impresiones del trabajo
         pantalla.fill(colorfondo)

@@ -74,5 +74,74 @@ class boton(pygame.sprite.Sprite):#tiene dos imagenes que seran el boton
         else: self.imagen_actual = self.imagen_normal
         pantalla.blit (self.imagen_actual, self.rect)
 
+class Dynamic_Button(pygame.sprite.Sprite):
+    def __init__(self, image1, image2, x, y,scale_x,scale_y):
+        pygame.sprite.Sprite.__init__(self)
+        self.scale_x = scale_x
+        self.scale_y = scale_y
+        self.image_normal = pygame.transform.scale(image1,(self.scale_x,self.scale_y))
+        self.image_select = pygame.transform.scale(image2,(self.scale_x,self.scale_y))
+        self.image_current = self.image_normal
+        self.rect = self.image_current.get_rect()
+        self.rect.topleft = (x,y)
+    def update(self, screen, cursor):
+        if cursor.colliderect(self.rect):
+            self.image_current = self.image_select
+        else:
+            self.image_current = self.image_normal
+        screen.blit(self.image_current,self.rect)
 
+class Bar_Menu():
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.rows = 0
+        self.col = 0
+        self.this_row = 0
+        self.Botones = pygame.sprite.Group()
+        self.rect = pygame.rect.Rect(x,y,800,100)
+        self.IMG_B_Up = pygame.image.load("./arrow_up.png")
+        self.IMG_B_up = pygame.image.load("./arrow_u.png")
+        self.IMG_B_Down = pygame.image.load("./arrow_down.png")
+        self.IMG_B_down = pygame.image.load("./arrow_d.png")
+        self.B_Up = Dynamic_Button(self.IMG_B_Up, self.IMG_B_up, 775, 0, 25,25)
+        self.B_Down = Dynamic_Button(self.IMG_B_Down, self.IMG_B_down, 775, 75, 25,25)
+
+    def add_button(self, button):
+        if self.col > 7:
+            self.col = 0
+        self.rows = len(self.Botones)//8
+        pos_x = self.col*75 + 25
+        pos_y = 25
+        if self.rows > 0:
+            pos_y = -150
+        button.rect.topleft = (pos_x,pos_y)
+        self.Botones.add(button)
+        self.col += 1
+
+    def update(self, pantalla, cursor):
+        self.Botones.update(pantalla, cursor)
+        self.B_Up.update(pantalla, cursor)
+        self.B_Down.update(pantalla, cursor)
+        pygame.draw.rect(pantalla, (0, 0, 0), self.rect, 1)
+
+    def show_row(self):
+        cont = 0
+        for sprite in self.Botones:
+            if self.this_row == cont//8:
+                sprite.rect.top = 25
+            else:
+                sprite.rect.top = -150
+            cont+=1
+
+    def event(self, event, cursor):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if cursor.colliderect(self.B_Up.rect):
+                if(self.this_row > 0):
+                    self.this_row-=1
+                    self.show_row()
+            if cursor.colliderect(self.B_Down.rect):
+                if (self.this_row < self.rows):
+                    self.this_row += 1
+                    self.show_row()
 
