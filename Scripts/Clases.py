@@ -145,3 +145,14 @@ class Bar_Menu():
                     self.this_row += 1
                     self.show_row()
 
+class Resistance():
+    def __init__(self, Ohm, input_voltage):
+        self.Ohm = Ohm
+        self.input_voltage = input_voltage
+        self.output_voltage = self.Ohm * self.input_voltage
+
+class Batery():
+    def __init__(self, voltage):
+        self.voltage = voltage
+
+

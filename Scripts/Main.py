@@ -76,7 +76,7 @@ def Simulador():
     is_down = False
     menu = Bar_Menu(0,0)
     pantalla.fill(GREEN)
-    for i in range(10):
+    for i in range(20):
         a = Dynamic_Button(IMG_B_Up, IMG_B_up, 25, 25, 50,50)
         menu.add_button(a)
 
