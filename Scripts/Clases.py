@@ -177,8 +177,26 @@ class Resistance(pygame.sprite.Sprite):
             if event.type == pygame.MOUSEBUTTONUP:
                 self.is_down = False
 
-class Batery():
-    def __init__(self, voltage):
+class Batery(pygame.sprite.Sprite):
+    def __init__(self, voltage, image, x, y, scale_x, scale_y):
+        pygame.sprite.Sprite.__init__(self)
         self.voltage = voltage
+        self.image = image
+        self.scale_x = scale_x
+        self.scale_y = scale_y
+        self.image = pygame.transform.scale(image, (self.scale_x, self.scale_y))
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (x,y)
+        self.is_down = False
+    def update(self, screen, cursor):
+        if self.is_down:
+            self.rect.topleft = pygame.mouse.get_pos()
+        screen.blit(self.image, self.rect)
+    def move_sprite(self, event, cursor):
+        if cursor.colliderect(self.rect):
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                self.is_down = True
+            if event.type == pygame.MOUSEBUTTONUP:
+                self.is_down = False
 
 

@@ -104,7 +104,8 @@ def Simulador():
                 for s in menu.Botones:
                     if cursor1.colliderect(s.rect):
                         if s.get_type() == "B_F_P":
-                            print("Colocar fuente de poder")
+                            power_supply = Batery(1, IMG_F_P, 300, 300, 100, 100)
+                            Elements.add(power_supply)
                         if s.get_type() == "B_Res":
                             resistence = Resistance(1, 1, IMG_R, 200, 200, 100, 100)
                             Elements.add(resistence)
