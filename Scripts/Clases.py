@@ -75,8 +75,9 @@ class boton(pygame.sprite.Sprite):#tiene dos imagenes que seran el boton
         pantalla.blit (self.imagen_actual, self.rect)
 
 class Dynamic_Button(pygame.sprite.Sprite):
-    def __init__(self, image1, image2, x, y,scale_x,scale_y):
+    def __init__(self, image1, image2, x, y,scale_x,scale_y, type):
         pygame.sprite.Sprite.__init__(self)
+        self.type = type
         self.scale_x = scale_x
         self.scale_y = scale_y
         self.image_normal = pygame.transform.scale(image1,(self.scale_x,self.scale_y))
@@ -84,12 +85,16 @@ class Dynamic_Button(pygame.sprite.Sprite):
         self.image_current = self.image_normal
         self.rect = self.image_current.get_rect()
         self.rect.topleft = (x,y)
+
     def update(self, screen, cursor):
         if cursor.colliderect(self.rect):
             self.image_current = self.image_select
         else:
             self.image_current = self.image_normal
         screen.blit(self.image_current,self.rect)
+    def get_type(self):
+        return self.type
+
 
 class Bar_Menu():
     def __init__(self, x, y):
@@ -104,8 +109,9 @@ class Bar_Menu():
         self.IMG_B_up = pygame.image.load("./arrow_u.png")
         self.IMG_B_Down = pygame.image.load("./arrow_down.png")
         self.IMG_B_down = pygame.image.load("./arrow_d.png")
-        self.B_Up = Dynamic_Button(self.IMG_B_Up, self.IMG_B_up, 775, 0, 25,25)
-        self.B_Down = Dynamic_Button(self.IMG_B_Down, self.IMG_B_down, 775, 75, 25,25)
+        self.B_Up = Dynamic_Button(self.IMG_B_Up, self.IMG_B_up, 775, 0, 25,25, "null")
+        self.B_Down = Dynamic_Button(self.IMG_B_Down, self.IMG_B_down, 775, 75, 25,25, "null")
+
 
     def add_button(self, button):
         if self.col > 7:
@@ -124,6 +130,8 @@ class Bar_Menu():
         self.B_Up.update(pantalla, cursor)
         self.B_Down.update(pantalla, cursor)
         pygame.draw.rect(pantalla, (0, 0, 0), self.rect, 1)
+
+
 
     def show_row(self):
         cont = 0
@@ -145,11 +153,29 @@ class Bar_Menu():
                     self.this_row += 1
                     self.show_row()
 
-class Resistance():
-    def __init__(self, Ohm, input_voltage):
+class Resistance(pygame.sprite.Sprite):
+    def __init__(self, Ohm, input_voltage,image,x,y,scale_x,scale_y):
+        pygame.sprite.Sprite.__init__(self)
         self.Ohm = Ohm
         self.input_voltage = input_voltage
         self.output_voltage = self.Ohm * self.input_voltage
+        self.image = image
+        self.scale_x = scale_x
+        self.scale_y = scale_y
+        self.image = pygame.transform.scale(image, (self.scale_x, self.scale_y))
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (x,y)
+        self.is_down = False
+    def update(self, screen, cursor):
+        if self.is_down:
+            self.rect.topleft = pygame.mouse.get_pos()
+        screen.blit(self.image, self.rect)
+    def move_sprite(self,event,cursor):
+        if cursor.colliderect(self.rect):
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                self.is_down = True
+            if event.type == pygame.MOUSEBUTTONUP:
+                self.is_down = False
 
 class Batery():
     def __init__(self, voltage):

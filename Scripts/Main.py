@@ -67,34 +67,47 @@ def Simulador():
     boton_a3 = pygame.image.load("./boton_atras.gif")
     IMG_B_Up = pygame.image.load("./arrow_up.png")
     IMG_B_up = pygame.image.load("./arrow_u.png")
+    IMG_F_P = pygame.image.load("./F_P.PNG")
+    IMG_R = pygame.image.load("./R.PNG")
     boton_atras = boton(boton_a3, boton_a2, 590, 400)  # cambia la posicion del boton
 
     line = Line_(pantalla, BLACK, 10, 400, 100, 5)
     Lista = pygame.sprite.Group()
     Lista.add(line)
+    Elements = pygame.sprite.Group()
     is_running = True
     is_down = False
     menu = Bar_Menu(0,0)
     pantalla.fill(GREEN)
-    for i in range(20):
-        a = Dynamic_Button(IMG_B_Up, IMG_B_up, 25, 25, 50,50)
-        menu.add_button(a)
 
-    print(9//8)
+    B_F_P = Dynamic_Button(IMG_F_P, IMG_F_P, 25, 25, 60,60, "B_F_P")
+    B_Res = Dynamic_Button(IMG_R, IMG_R, 25, 25, 60, 60, "B_Res")
+    menu.add_button(B_F_P)
+    menu.add_button(B_Res)
     while is_running:
         pantalla.fill(WHITE)
         cursor1.update()
         Lista.update()
         menu.update(pantalla, cursor1)
+        Elements.update(pantalla, cursor1)
         boton_atras.update(pantalla, cursor1)
         for sprite in Lista:
             sprite.Draw()
         pygame.display.update()
         for event in pygame.event.get():
             menu.event(event, cursor1)
+            for s in Elements:
+                s.move_sprite(event, cursor1)
             if event.type == pygame.QUIT:
                 is_running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
+                for s in menu.Botones:
+                    if cursor1.colliderect(s.rect):
+                        if s.get_type() == "B_F_P":
+                            print("Colocar fuente de poder")
+                        if s.get_type() == "B_Res":
+                            resistence = Resistance(1, 1, IMG_R, 200, 200, 100, 100)
+                            Elements.add(resistence)
                 is_down = True
                 a = pygame.sprite.spritecollide(Cursor_sprite(cursor1), Lista, False, False)
                 print(a)
@@ -105,6 +118,8 @@ def Simulador():
         if is_down:
             for sprite in a:
                 sprite.set_pos(pygame.mouse.get_pos())
+
+
     pygame.quit()
     #Simulador()
 
