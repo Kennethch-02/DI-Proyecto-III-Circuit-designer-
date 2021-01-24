@@ -40,6 +40,9 @@ class Line_(pygame.sprite.Sprite):
         self.rect = pygame.rect
     def Draw(self):
         self.rect = pygame.draw.rect(self.surface, self.color, self.line)
+    def update(self):
+
+        self.Draw()
     def set_width(self, width):
         self.width = width
     def set_height(self, height):
@@ -58,8 +61,22 @@ class Line_(pygame.sprite.Sprite):
 class cursor (pygame.Rect):#Solo es un rectangulo que sigue al cursor
     def __init__(self):
         pygame.Rect.__init__(self,0,0,1,1)
-    def update(self):#actualiza constantemente la posicion
+        self.active_cable = False
+        self.cursor = pygame.image.load("./C_Cable.png")
+        self.cursor_active = pygame.image.load("./C_Cable_A.png")
+        self.cursor = pygame.transform.scale(self.cursor,(50,50))
+        self.cursor_active = pygame.transform.scale(self.cursor_active,(50,50))
+    def update(self, pantalla):#actualiza constantemente la posicion
         self.left, self.top = pygame.mouse.get_pos()
+        if self.active_cable:
+            self.top -= 50
+            pantalla.blit(self.cursor, self)
+    def cable_cursor(self, pantalla):
+        pygame.mouse.set_visible(False)
+        self.active_cable = True
+    def normal_cursor(self):
+        pygame.mouse.set_visible(True)
+        self.active_cable = False
 
 class boton(pygame.sprite.Sprite):#tiene dos imagenes que seran el boton
     def __init__(self, imagen1, imagen2, x=300, y=70):

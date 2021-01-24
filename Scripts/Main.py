@@ -1,7 +1,8 @@
-import pygame
 import sys
+
+import pygame
 from Clases import *
-from threading import Thread
+
 ##Variables globales
 cursor1 = cursor()
 #/____________________________________________________________________________________________________________________
@@ -39,7 +40,7 @@ def Indicaciones():
         # actualizaciones e impresiones del trabajo
         pantalla.fill(colorfondo)
         pantalla.blit(texto, (270, 50))  # Texto de bienvenida
-        cursor1.update()
+        cursor1.update(pantalla)
         boton_atras.update(pantalla, cursor1)
         pygame.display.update()
     pygame.quit()
@@ -77,17 +78,20 @@ def Simulador():
     Elements = pygame.sprite.Group()
     is_running = True
     is_down = False
+    draw_line = False
+    Lines = pygame.sprite.Group()
+    coord_line = (0,0)
     menu = Bar_Menu(0,0)
     pantalla.fill(GREEN)
-
     B_F_P = Dynamic_Button(IMG_F_P, IMG_F_P, 25, 25, 60,60, "B_F_P")
     B_Res = Dynamic_Button(IMG_R, IMG_R, 25, 25, 60, 60, "B_Res")
     menu.add_button(B_F_P)
     menu.add_button(B_Res)
     while is_running:
         pantalla.fill(WHITE)
-        cursor1.update()
+        cursor1.update(pantalla)
         Lista.update()
+        Lines.update()
         menu.update(pantalla, cursor1)
         Elements.update(pantalla, cursor1)
         boton_atras.update(pantalla, cursor1)
@@ -105,19 +109,36 @@ def Simulador():
                     if cursor1.colliderect(s.rect):
                         if s.get_type() == "B_F_P":
                             print("Colocar fuente de poder")
+                            cursor1.cable_cursor(pantalla)
                         if s.get_type() == "B_Res":
                             resistence = Resistance(1, 1, IMG_R, 200, 200, 100, 100)
                             Elements.add(resistence)
+                            cursor1.normal_cursor()
                 is_down = True
+                if cursor1.active_cable:
+                    coord_line = pygame.mouse.get_pos()
+                    draw_line = True
+                    lines = Line_(pantalla, BLACK, coord_line[0], coord_line[1], 1,1)
+                    Lines.add(lines)
                 a = pygame.sprite.spritecollide(Cursor_sprite(cursor1), Lista, False, False)
                 print(a)
                 if cursor1.colliderect(boton_atras.rect):
+                    cursor1.normal_cursor()
                     return Main()
             if event.type == pygame.MOUSEBUTTONUP:
                 is_down = False
+                if cursor1.active_cable:
+                    draw_line = False
         if is_down:
             for sprite in a:
                 sprite.set_pos(pygame.mouse.get_pos())
+        if draw_line:
+            coord = pygame.mouse.get_pos()
+            print("coord" + str(coord))
+            print(coord_line)
+            lines.line.set_width(coord[0]-coord_line[0])
+
+
 
 
     pygame.quit()
@@ -163,7 +184,7 @@ def Main():
         #actualizaciones e impresiones del trabajo
         pantalla.fill(colorfondo)
         pantalla.blit(texto, (220,70))
-        cursor1.update()
+        cursor1.update(pantalla)
         boton1.update(pantalla, cursor1)
         boton2.update(pantalla, cursor1)
         pygame.display.update()
