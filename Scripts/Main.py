@@ -137,7 +137,7 @@ def Simulador():
             print(coord[0]-coord_line[0])
             if((coord[0]-coord_line[0])<0):
                 print("Hola")
-                lines.line.set_x(lines.line.get_x()-(coord[0]-coord_line[0]))
+                lines.line.set_x((coord[0]-coord_line[0])+lines.line.get_x())
                 lines.line.set_width(-1*(coord[0] - coord_line[0]))
             else:
                 lines.line.set_width(coord[0]-coord_line[0])
