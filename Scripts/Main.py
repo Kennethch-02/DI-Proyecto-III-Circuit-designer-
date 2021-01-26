@@ -134,13 +134,13 @@ def Simulador():
                 sprite.set_pos(pygame.mouse.get_pos())
         if draw_line:
             coord = pygame.mouse.get_pos()
-            print("coord" + str(coord))
-            print(coord_line)
-            lines.line.set_width(coord[0]-coord_line[0])
-
-
-
-
+            print(coord[0]-coord_line[0])
+            if((coord[0]-coord_line[0])<0):
+                print("Hola")
+                lines.line.set_x(lines.line.get_x()-(coord[0]-coord_line[0]))
+                lines.line.set_width(-1*(coord[0] - coord_line[0]))
+            else:
+                lines.line.set_width(coord[0]-coord_line[0])
     pygame.quit()
     #Simulador()
 

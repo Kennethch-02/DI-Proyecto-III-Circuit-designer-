@@ -26,6 +26,8 @@ class Line(pygame.Rect):
         self.height = height
     def set_x(self, x):
         self.left = x
+    def get_x(self):
+        return self.left
     def set_y(self, y):
         self.top = y
     def set_pos(self, pos):
@@ -49,6 +51,7 @@ class Line_(pygame.sprite.Sprite):
         self.height = height
     def set_x(self, x):
         self.line.set_x(x)
+
     def set_y(self, y):
         self.line.set_y(y)
     def set_pos(self,pos):
