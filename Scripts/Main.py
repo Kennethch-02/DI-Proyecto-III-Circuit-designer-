@@ -78,7 +78,8 @@ def Simulador():
     Elements = pygame.sprite.Group()
     is_running = True
     is_down = False
-    draw_line = False
+    draw_line_h = False
+    draw_line_v = False
     Lines = pygame.sprite.Group()
     coord_line = (0,0)
     menu = Bar_Menu(0,0)
@@ -87,6 +88,7 @@ def Simulador():
     B_Res = Dynamic_Button(IMG_R, IMG_R, 25, 25, 60, 60, "B_Res")
     menu.add_button(B_F_P)
     menu.add_button(B_Res)
+    coord_line = 0
     while is_running:
         pantalla.fill(WHITE)
         cursor1.update(pantalla)
@@ -117,7 +119,6 @@ def Simulador():
                 is_down = True
                 if cursor1.active_cable:
                     coord_line = pygame.mouse.get_pos()
-                    draw_line = True
                     lines = Line_(pantalla, BLACK, coord_line[0], coord_line[1], 1,1)
                     Lines.add(lines)
                 a = pygame.sprite.spritecollide(Cursor_sprite(cursor1), Lista, False, False)
@@ -128,20 +129,37 @@ def Simulador():
             if event.type == pygame.MOUSEBUTTONUP:
                 is_down = False
                 if cursor1.active_cable:
-                    draw_line = False
+                    draw_line_h = False
+                    draw_line_v = False
+                    coord_line = 0
+            if coord_line!=0 and draw_line_v != True and draw_line_h != True:
+                actual_coord = pygame.mouse.get_pos()
+                if((actual_coord[0]-coord_line[0]) > 10):
+                    draw_line_h = True
+                if ((actual_coord[0] - coord_line[0]) < -10):
+                    draw_line_h = True
+                if ((actual_coord[1] - coord_line[1]) > 10):
+                    draw_line_v = True
+                if ((actual_coord[1] - coord_line[1]) < -10):
+                    draw_line_v = True
         if is_down:
             for sprite in a:
                 sprite.set_pos(pygame.mouse.get_pos())
-        if draw_line:
+        if draw_line_h:
             coord = pygame.mouse.get_pos()
-            print(coord[0]-coord_line[0])
             if((coord[0]-coord_line[0])<0):
-                print("Hola")
-                print(lines.line.get_x())
-                lines.line.set_x((coord[0]-coord_line[0])+lines.line.get_x())
+                lines.line.set_x((coord[0]))
                 lines.line.set_width(-1*(coord[0] - coord_line[0]))
             else:
                 lines.line.set_width(coord[0]-coord_line[0])
+
+        if draw_line_v:
+            coord_v = pygame.mouse.get_pos()
+            if((coord_v[1]-coord_line[1])<0):
+                lines.line.set_y((coord_v[1]))
+                lines.line.set_height(-1*(coord_v[1] - coord_line[1]))
+            else:
+                lines.line.set_height(coord_v[1]-coord_line[1])
     pygame.quit()
     #Simulador()
 
