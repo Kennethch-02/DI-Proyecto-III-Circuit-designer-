@@ -98,7 +98,6 @@ def Simulador():
         menu.update(pantalla, cursor1)
         Elements.update(pantalla, cursor1)
         boton_atras.update(pantalla, cursor1)
-
         pygame.display.update()
         for event in pygame.event.get():
             menu.event(event, cursor1)
@@ -110,7 +109,9 @@ def Simulador():
                 for s in menu.Botones:
                     if cursor1.colliderect(s.rect):
                         if s.get_type() == "B_F_P":
-                            print("Colocar fuente de poder")
+                            batery = Batery(1, IMG_F_P, 200, 200, 100, 100)
+                            Elements.add(batery)
+                            cursor1.normal_cursor()
                         if s.get_type() == "B_Res":
                             resistence = Resistance(1, 1, IMG_R, 200, 200, 100, 100)
                             Elements.add(resistence)
@@ -128,6 +129,9 @@ def Simulador():
                 if cursor1.colliderect(boton_atras.rect):
                     cursor1.normal_cursor()
                     return Main()
+                for elements in Elements:
+                    if cursor1.colliderect(elements):
+                        elements.rotate()
             if event.type == pygame.MOUSEBUTTONUP:
                 is_down = False
                 if cursor1.active_cable:
@@ -153,7 +157,6 @@ def Simulador():
                 lines.line.set_width(-1*(coord[0] - coord_line[0]))
             else:
                 lines.line.set_width(coord[0]-coord_line[0])
-
         if draw_line_v:
             coord_v = pygame.mouse.get_pos()
             if((coord_v[1]-coord_line[1])<0):

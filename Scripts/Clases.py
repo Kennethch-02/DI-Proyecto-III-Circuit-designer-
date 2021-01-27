@@ -196,6 +196,8 @@ class Resistance(pygame.sprite.Sprite):
                 self.is_down = True
             if event.type == pygame.MOUSEBUTTONUP:
                 self.is_down = False
+    def rotate(self):
+        self.image = pygame.transform.rotate(self.image, 90)
 
 class Batery(pygame.sprite.Sprite):
     def __init__(self, voltage, image, x, y, scale_x, scale_y):
@@ -218,5 +220,8 @@ class Batery(pygame.sprite.Sprite):
                 self.is_down = True
             if event.type == pygame.MOUSEBUTTONUP:
                 self.is_down = False
+
+    def rotate(self):
+        return 0
 
 
