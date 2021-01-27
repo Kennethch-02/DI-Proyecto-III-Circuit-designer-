@@ -146,7 +146,6 @@ def Simulador():
                     draw_line_v = True
         if is_down:
             print("")
-
         if draw_line_h:
             coord = pygame.mouse.get_pos()
             if((coord[0]-coord_line[0])<0):
