@@ -1,4 +1,5 @@
 import sys
+import random
 
 import pygame
 from Clases import *
@@ -109,11 +110,11 @@ def Simulador():
                 for s in menu.Botones:
                     if cursor1.colliderect(s.rect):
                         if s.get_type() == "B_F_P":
-                            batery = Batery(1, IMG_F_P, 200, 200, 100, 100)
+                            batery = Batery(1, IMG_F_P,random.randint(0,800) , random.randint(100,600), 100, 100)
                             Elements.add(batery)
                             cursor1.normal_cursor()
                         if s.get_type() == "B_Res":
-                            resistence = Resistance(1, 1, IMG_R, 200, 200, 100, 100)
+                            resistence = Resistance(1, 1, IMG_R, random.randint(50,700), random.randint(100,500), 100, 100)
                             Elements.add(resistence)
                             cursor1.normal_cursor()
                         if s.get_type() == "B_Cable":
@@ -129,9 +130,6 @@ def Simulador():
                 if cursor1.colliderect(boton_atras.rect):
                     cursor1.normal_cursor()
                     return Main()
-                for elements in Elements:
-                    if cursor1.colliderect(elements):
-                        elements.rotate()
             if event.type == pygame.MOUSEBUTTONUP:
                 is_down = False
                 if cursor1.active_cable:

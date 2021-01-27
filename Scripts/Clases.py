@@ -132,7 +132,6 @@ class Bar_Menu():
         self.B_Up = Dynamic_Button(self.IMG_B_Up, self.IMG_B_up, 775, 0, 25,25, "null")
         self.B_Down = Dynamic_Button(self.IMG_B_Down, self.IMG_B_down, 775, 75, 25,25, "null")
 
-
     def add_button(self, button):
         if self.col > 7:
             self.col = 0
@@ -150,8 +149,6 @@ class Bar_Menu():
         self.B_Up.update(pantalla, cursor)
         self.B_Down.update(pantalla, cursor)
         pygame.draw.rect(pantalla, (0, 0, 0), self.rect, 1)
-
-
 
     def show_row(self):
         cont = 0
@@ -188,11 +185,13 @@ class Resistance(pygame.sprite.Sprite):
         self.is_down = False
     def update(self, screen, cursor):
         if self.is_down:
-            self.rect.topleft = pygame.mouse.get_pos()
+            self.rect.center = pygame.mouse.get_pos()
         screen.blit(self.image, self.rect)
     def move_sprite(self,event,cursor):
         if cursor.colliderect(self.rect):
             if event.type == pygame.MOUSEBUTTONDOWN:
+                if cursor.colliderect(self.rect):
+                    self.rotate()
                 self.is_down = True
             if event.type == pygame.MOUSEBUTTONUP:
                 self.is_down = False
@@ -212,7 +211,7 @@ class Batery(pygame.sprite.Sprite):
         self.is_down = False
     def update(self, screen, cursor):
         if self.is_down:
-            self.rect.topleft = pygame.mouse.get_pos()
+            self.rect.center = pygame.mouse.get_pos()
         screen.blit(self.image, self.rect)
     def move_sprite(self, event, cursor):
         if cursor.colliderect(self.rect):
@@ -220,7 +219,6 @@ class Batery(pygame.sprite.Sprite):
                 self.is_down = True
             if event.type == pygame.MOUSEBUTTONUP:
                 self.is_down = False
-
     def rotate(self):
         return 0
 
