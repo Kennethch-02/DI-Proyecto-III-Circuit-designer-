@@ -70,11 +70,10 @@ def Simulador():
     IMG_B_up = pygame.image.load("./arrow_u.png")
     IMG_F_P = pygame.image.load("./F_P.PNG")
     IMG_R = pygame.image.load("./R.PNG")
+    IMG_Cable = pygame.image.load("./C_Cable.png")
+    IMG_Cable_A = pygame.image.load("./C_Cable_A.png")
     boton_atras = boton(boton_a3, boton_a2, 590, 400)  # cambia la posicion del boton
 
-    line = Line_(pantalla, BLACK, 10, 400, 100, 5)
-    Lista = pygame.sprite.Group()
-    Lista.add(line)
     Elements = pygame.sprite.Group()
     is_running = True
     is_down = False
@@ -86,19 +85,20 @@ def Simulador():
     pantalla.fill(GREEN)
     B_F_P = Dynamic_Button(IMG_F_P, IMG_F_P, 25, 25, 60,60, "B_F_P")
     B_Res = Dynamic_Button(IMG_R, IMG_R, 25, 25, 60, 60, "B_Res")
+    B_Cable = Dynamic_Button(IMG_Cable, IMG_Cable_A, 25, 25, 60, 60, "B_Cable")
+
     menu.add_button(B_F_P)
     menu.add_button(B_Res)
+    menu.add_button(B_Cable)
     coord_line = 0
     while is_running:
         pantalla.fill(WHITE)
         cursor1.update(pantalla)
-        Lista.update()
         Lines.update()
         menu.update(pantalla, cursor1)
         Elements.update(pantalla, cursor1)
         boton_atras.update(pantalla, cursor1)
-        for sprite in Lista:
-            sprite.Draw()
+
         pygame.display.update()
         for event in pygame.event.get():
             menu.event(event, cursor1)
@@ -111,18 +111,20 @@ def Simulador():
                     if cursor1.colliderect(s.rect):
                         if s.get_type() == "B_F_P":
                             print("Colocar fuente de poder")
-                            cursor1.cable_cursor(pantalla)
                         if s.get_type() == "B_Res":
                             resistence = Resistance(1, 1, IMG_R, 200, 200, 100, 100)
                             Elements.add(resistence)
                             cursor1.normal_cursor()
+                        if s.get_type() == "B_Cable":
+                            if cursor1.active_cable:
+                                cursor1.normal_cursor()
+                            else:
+                                cursor1.cable_cursor(pantalla)
                 is_down = True
                 if cursor1.active_cable:
                     coord_line = pygame.mouse.get_pos()
                     lines = Line_(pantalla, BLACK, coord_line[0], coord_line[1], 1,1)
                     Lines.add(lines)
-                a = pygame.sprite.spritecollide(Cursor_sprite(cursor1), Lista, False, False)
-                print(a)
                 if cursor1.colliderect(boton_atras.rect):
                     cursor1.normal_cursor()
                     return Main()
@@ -143,8 +145,7 @@ def Simulador():
                 if ((actual_coord[1] - coord_line[1]) < -10):
                     draw_line_v = True
         if is_down:
-            for sprite in a:
-                sprite.set_pos(pygame.mouse.get_pos())
+            print("")
         if draw_line_h:
             coord = pygame.mouse.get_pos()
             if((coord[0]-coord_line[0])<0):
