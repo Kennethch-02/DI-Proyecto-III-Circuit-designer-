@@ -1,6 +1,6 @@
-Jasdalsda,sd,amdamdlkasdma
-ksamdkasmdaksmdalkdma
-kasdkamdlasmdaksmdlakdmad
-dkjandkamsdlkasmdalkdmakdsma
-ajsndaksjdamkdmsalkdmalkdmad
-dnakdsaskdmakdmladmckasdk
+Bienvenido!
+En esta interfaz vas a encontrar la opcion de simular un circuito,
+solo tienes que dibujarlo a partir del menu de la parte superior
+de la pantalla y definir cada uno de los nombres y los valores que
+desees, si quieres guardar tu circuito presiona en guardar y si quieres
+cargarlo presionas en el boton de cargar.

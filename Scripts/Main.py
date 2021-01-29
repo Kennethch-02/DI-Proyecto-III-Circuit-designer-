@@ -7,8 +7,6 @@ from Clases import *
 
 ##Variables globales
 cursor1 = cursor()
-#/____________________________________________________________________________________________________________________
-#/_________________________________________Funciones__________________________________________________________________
 
 #/____________________________________________________________________________________________________________________
 #/_________________________________________VENTANA INDICACIONES_______________________________________________________
@@ -65,8 +63,8 @@ def Indicaciones():
 def Simulador():
     global cursor1
     pygame.init()
-    WIDTH = 1000
-    HEIGHT = 800
+    WIDTH = 800
+    HEIGHT = 600
     pantalla = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption('My Game')
     Circuit = Circuito(pantalla)
@@ -82,14 +80,15 @@ def Simulador():
     IMG_B_Up = pygame.image.load("./arrow_up.png")
     IMG_B_up = pygame.image.load("./arrow_u.png")
     IMG_Save = pygame.image.load("./boton_save.jpg")
+    IMG_Load= pygame.image.load("./boton_load.gif")
     IMG_F_P = pygame.image.load("./F_P.PNG")
     IMG_R = pygame.image.load("./R.PNG")
     IMG_Cable = pygame.image.load("./C_Cable.png")
     IMG_Cable_A = pygame.image.load("./C_Cable_A.png")
     boton_atras = boton(boton_a2, boton_a2, WIDTH-200,HEIGHT-50)  # cambia la posicion del boton
     botton_save = boton(IMG_Save, IMG_Save, 25, HEIGHT-50)
-    botton_load = boton(IMG_Save, IMG_Save, 150, 150)
-    text_load = text_box(10, 150, 100, 25, "Archive")
+    botton_load = boton(IMG_Load, IMG_Load, 150, 0)
+    text_load = text_box(20, 100, 150, 30, "Archive")
     is_running = True
     is_down = False
     draw_line_h = False
@@ -208,10 +207,6 @@ def Main():
     boton1 = boton(boton_ind1,boton_ind2)
     boton2 = boton(boton_sim1, boton_sim2,300,120)
 
-# /____________________________________________________________________________________________________________________
-# /_________________________________________VENTANA INDICACIONES_______________________________________________________
-# /____________________________________________________________________________________________________________________
-# /_________________________________________Ciclo Main_________________________________________________________________
 
     while salir != True:
         for event in pygame.event.get():

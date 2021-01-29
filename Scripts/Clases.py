@@ -1,24 +1,24 @@
 from datetime import datetime
 import pygame
 import os
-
+#Clase pantalla, la cual se encarga de pintar en el lienzo
 class Pantalla(pygame.Rect):
     def __init__(self, w, h):
         pygame.Rect.__init__(self, 1, 1, w, h)
-
+#Clase cursor la cual sonsiste en un rectangulo transparente que sigue al cursor
 class Cursor(pygame.Rect):
     def __init__(self):
         pygame.Rect.__init__(self, 0,0,1,1)
     def update(self):
         pygame.init()
         self.left, self.top = pygame.mouse.get_pos()
-
+#Clase Curso_Sprite se encarga del funcionamiento de la interaccion del cursor
 class Cursor_sprite(pygame.sprite.Sprite):
     def __init__(self, cursor):
         pygame.init()
         self.rect = cursor
         self.rect.topleft = pygame.mouse.get_pos()
-
+#Clase linea se encarga de dibujar las lineas que serán los cables en todas las posiciones posibles
 class Line(pygame.Rect):
     def __init__(self,x,y,w,h):
         pygame.Rect.__init__(self, x,y,w,h)
@@ -34,7 +34,7 @@ class Line(pygame.Rect):
         self.top = y
     def set_pos(self, pos):
         self.left, self.top = pos
-
+#Clase line_ se encarga de pintar dicha linea
 class Line_(pygame.sprite.Sprite):
     def __init__(self,surface, color , x,y,w,h):
         pygame.sprite.Sprite.__init__(self)
@@ -45,23 +45,21 @@ class Line_(pygame.sprite.Sprite):
     def Draw(self):
         self.rect = pygame.draw.rect(self.surface, self.color, self.line)
     def update(self):
-
         self.Draw()
+    # Setea posiciones
     def set_width(self, width):
         self.width = width
     def set_height(self, height):
         self.height = height
     def set_x(self, x):
         self.line.set_x(x)
-
     def set_y(self, y):
         self.line.set_y(y)
     def set_pos(self,pos):
         self.line.set_pos(pos)
     def get_rect(self):
         return self.line
-#/____________________________________________________________________________________________________________________
-#/_________________________________________Clases_____________________________________________________________________
+#Clase encargada de cada caja de texto que se encuentre en la interfaz
 class text_box(pygame.sprite.Sprite):
     def __init__(self, x,y,w,h, text):
         pygame.sprite.Sprite.__init__(self)
@@ -75,7 +73,7 @@ class text_box(pygame.sprite.Sprite):
         self.active = False
         self.text = text
         self.txt = ""
-
+#Actualiza parametros
     def update(self, screen, cursor, dynamic,xy):
         font = pygame.font.Font("times.ttf", 18)
         self.txt = font.render(self.text, True, (0, 0, 0))
@@ -87,7 +85,7 @@ class text_box(pygame.sprite.Sprite):
         self.input.y += 15
         pygame.draw.rect(screen, self.color, self.input, 1)
         screen.blit(self.txt, (self.input.x + 1, self.input.y + 1))
-
+#actualiza el texto
     def text_update(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.input.collidepoint(event.pos):
@@ -109,8 +107,8 @@ class text_box(pygame.sprite.Sprite):
 
     def get_text(self):
         return self.text
-
-class cursor (pygame.Rect):#Solo es un rectangulo que sigue al cursor
+#Solo es un rectangulo que sigue al cursor
+class cursor (pygame.Rect):
     def __init__(self):
         pygame.Rect.__init__(self,0,0,1,1)
         self.active_cable = False
@@ -129,8 +127,8 @@ class cursor (pygame.Rect):#Solo es un rectangulo que sigue al cursor
     def normal_cursor(self):
         pygame.mouse.set_visible(True)
         self.active_cable = False
-
-class boton(pygame.sprite.Sprite):#tiene dos imagenes que seran el boton
+#tiene dos imagenes que seran el boton
+class boton(pygame.sprite.Sprite):
     def __init__(self, imagen1, imagen2, x=300, y=70):
         self.imagen_normal = imagen1
         self.imagen_selec = imagen2
@@ -142,7 +140,7 @@ class boton(pygame.sprite.Sprite):#tiene dos imagenes que seran el boton
             self.imagen_actual = self.imagen_selec
         else: self.imagen_actual = self.imagen_normal
         pantalla.blit (self.imagen_actual, self.rect)
-
+#Realiza el boton dinamico en lugar de estatico
 class Dynamic_Button(pygame.sprite.Sprite):
     def __init__(self, image1, image2, x, y,scale_x,scale_y, type):
         pygame.sprite.Sprite.__init__(self)
@@ -163,7 +161,7 @@ class Dynamic_Button(pygame.sprite.Sprite):
         screen.blit(self.image_current,self.rect)
     def get_type(self):
         return self.type
-
+#Clase encargada del menú de la interfaz
 class Bar_Menu():
     def __init__(self, x, y):
         self.x = x
@@ -217,7 +215,7 @@ class Bar_Menu():
                 if (self.this_row < self.rows):
                     self.this_row += 1
                     self.show_row()
-
+#Clase que se comportará como la resistencia de la interfaz
 class Resistance(pygame.sprite.Sprite):
     def __init__(self, Ohm, input_voltage,image,x,y,scale_x,scale_y, type):
         pygame.sprite.Sprite.__init__(self)
@@ -259,7 +257,6 @@ class Resistance(pygame.sprite.Sprite):
                 self.is_down = True
             if event.type == pygame.MOUSEBUTTONUP:
                 self.is_down = False
-
     def rotate(self):
         if self.is_rotate:
             self.image = pygame.transform.rotate(self.image, 270)
@@ -271,7 +268,7 @@ class Resistance(pygame.sprite.Sprite):
     def set_name(self, name):
         self.name = name
         self.name_box.edit_text(self.name)
-
+#Clase bateria con sus atributos respectivos
 class Batery(pygame.sprite.Sprite):
     def __init__(self, voltage, image, x, y, scale_x, scale_y, type):
         pygame.sprite.Sprite.__init__(self)
@@ -310,7 +307,7 @@ class Batery(pygame.sprite.Sprite):
         else:
             self.image = pygame.transform.rotate(self.image, 90)
             self.is_rotate = True
-
+#Clase encargada de generar el circuito
 class Circuito():
     def __init__(self, screen):
         self.Elements = pygame.sprite.Group()
@@ -318,7 +315,7 @@ class Circuito():
         self.IMG_F_P = pygame.image.load("./F_P.PNG")
         self.IMG_R = pygame.image.load("./R.PNG")
         self.screen = screen
-
+    #Se encarga de guarfar el circuito en el netlist file
     def Save_Circuit(self):
         count_txt = 0
         content = os.listdir()
@@ -355,7 +352,7 @@ class Circuito():
             info += "\n"
             Archive.write(info)
         Archive.close()
-
+    #Recarga el circuito guardado
     def Load_Circuit(self, name):
         self.Lines.empty()
         self.Elements.empty()
