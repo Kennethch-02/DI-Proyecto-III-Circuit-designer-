@@ -63,8 +63,8 @@ def Indicaciones():
 def Simulador():
     global cursor1
     pygame.init()
-    WIDTH = 800
-    HEIGHT = 600
+    WIDTH = 1000
+    HEIGHT = 800
     pantalla = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption('My Game')
     Circuit = Circuito(pantalla)
@@ -80,14 +80,14 @@ def Simulador():
     IMG_B_Up = pygame.image.load("./arrow_up.png")
     IMG_B_up = pygame.image.load("./arrow_u.png")
     IMG_Save = pygame.image.load("./boton_save.jpg")
-    IMG_Load= pygame.image.load("./boton_load.gif")
+    IMG_Load= pygame.image.load("./boton_load.jpg")
     IMG_F_P = pygame.image.load("./F_P.PNG")
     IMG_R = pygame.image.load("./R.PNG")
     IMG_Cable = pygame.image.load("./C_Cable.png")
     IMG_Cable_A = pygame.image.load("./C_Cable_A.png")
     boton_atras = boton(boton_a2, boton_a2, WIDTH-200,HEIGHT-50)  # cambia la posicion del boton
     botton_save = boton(IMG_Save, IMG_Save, 25, HEIGHT-50)
-    botton_load = boton(IMG_Load, IMG_Load, 0, 50)
+    botton_load = boton(IMG_Load, IMG_Load, 170, 115)
     text_load = text_box(10, 100, 150, 30, "Archive")
     is_running = True
     is_down = False
@@ -112,7 +112,7 @@ def Simulador():
         boton_atras.update(pantalla, cursor1)
         botton_save.update(pantalla, cursor1)
         botton_load.update(pantalla, cursor1)
-        text_load.update(pantalla, cursor1, False, (20, 135))
+        text_load.update(pantalla, cursor1, False, (20, 100))
         pygame.display.update()
         for event in pygame.event.get():
             menu.event(event, cursor1)
