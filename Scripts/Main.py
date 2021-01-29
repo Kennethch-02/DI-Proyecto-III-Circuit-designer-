@@ -25,6 +25,10 @@ def Indicaciones():
     colorfondo = blanco
     fuente = pygame.font.SysFont("Javanese text", 45)
     texto = fuente.render("Indicaciones", True, negro)  # Texto de bienvenida
+    Archive = open("Indicaciones.txt", "r")
+    text_ = Archive.read()
+    text_ = text_.split("\n")
+
     # Variables del Boton
     boton_a2 = pygame.image.load("./boton_atras.gif")
     boton_a3 = pygame.image.load("./boton_atras.gif")
@@ -44,6 +48,13 @@ def Indicaciones():
         pantalla.blit(texto, (270, 50))  # Texto de bienvenida
         cursor1.update(pantalla)
         boton_atras.update(pantalla, cursor1)
+        x = 10
+        y = 150
+        for line in text_:
+            font = pygame.font.Font("times.ttf", 18)
+            txt = font.render(line, True, (0, 0, 0))
+            pantalla.blit(txt,(x,y))
+            y+=20
         pygame.display.update()
     pygame.quit()
     #Indicaciones()
