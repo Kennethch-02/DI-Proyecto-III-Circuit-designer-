@@ -1,4 +1,6 @@
+from datetime import datetime
 import pygame
+import os
 
 class Pantalla(pygame.Rect):
     def __init__(self, w, h):
@@ -60,6 +62,53 @@ class Line_(pygame.sprite.Sprite):
         return self.line
 #/____________________________________________________________________________________________________________________
 #/_________________________________________Clases_____________________________________________________________________
+class text_box(pygame.sprite.Sprite):
+    def __init__(self, x,y,w,h, text):
+        pygame.sprite.Sprite.__init__(self)
+        self.y = y
+        self.input = pygame.Rect(x,self.y,w,h)
+        self.h = h
+        self.w = w
+        self.color_i = (0, 0, 0)
+        self.color_a = (255, 255, 255)
+        self.color = self.color_i
+        self.active = False
+        self.text = text
+        self.txt = ""
+
+    def update(self, screen, cursor, dynamic,xy):
+        font = pygame.font.Font("times.ttf", 18)
+        self.txt = font.render(self.text, True, (0, 0, 0))
+        if dynamic:
+            width = max(100, self.txt.get_width() + 10)
+            self.input.w = width
+        self.input.topleft = xy
+        self.input.x -= 15
+        self.input.y += 15
+        pygame.draw.rect(screen, self.color, self.input, 1)
+        screen.blit(self.txt, (self.input.x + 1, self.input.y + 1))
+
+    def text_update(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if self.input.collidepoint(event.pos):
+                # Set the value of the variable
+                self.active = not self.active
+            else:
+                self.active = False
+            # Set the current color of the box
+            self.color = self.color_a if self.active else self.color_i
+        if event.type == pygame.KEYDOWN:
+            if self.active:
+                if event.key == pygame.K_BACKSPACE:
+                    self.text = self.text[:-1]
+                else:
+                    self.text += event.unicode
+
+    def edit_text(self, text):
+        self.text = text
+
+    def get_text(self):
+        return self.text
 
 class cursor (pygame.Rect):#Solo es un rectangulo que sigue al cursor
     def __init__(self):
@@ -115,7 +164,6 @@ class Dynamic_Button(pygame.sprite.Sprite):
     def get_type(self):
         return self.type
 
-
 class Bar_Menu():
     def __init__(self, x, y):
         self.x = x
@@ -124,13 +172,13 @@ class Bar_Menu():
         self.col = 0
         self.this_row = 0
         self.Botones = pygame.sprite.Group()
-        self.rect = pygame.rect.Rect(x,y,800,100)
+        self.rect = pygame.rect.Rect(x,y,1000,100)
         self.IMG_B_Up = pygame.image.load("./arrow_up.png")
         self.IMG_B_up = pygame.image.load("./arrow_u.png")
         self.IMG_B_Down = pygame.image.load("./arrow_down.png")
         self.IMG_B_down = pygame.image.load("./arrow_d.png")
-        self.B_Up = Dynamic_Button(self.IMG_B_Up, self.IMG_B_up, 775, 0, 25,25, "null")
-        self.B_Down = Dynamic_Button(self.IMG_B_Down, self.IMG_B_down, 775, 75, 25,25, "null")
+        self.B_Up = Dynamic_Button(self.IMG_B_Up, self.IMG_B_up, 975, 0, 25,25, "null")
+        self.B_Down = Dynamic_Button(self.IMG_B_Down, self.IMG_B_down, 975, 75, 25,25, "null")
 
     def add_button(self, button):
         if self.col > 7:
@@ -171,9 +219,11 @@ class Bar_Menu():
                     self.show_row()
 
 class Resistance(pygame.sprite.Sprite):
-    def __init__(self, Ohm, input_voltage,image,x,y,scale_x,scale_y):
+    def __init__(self, Ohm, input_voltage,image,x,y,scale_x,scale_y, type):
         pygame.sprite.Sprite.__init__(self)
+        self.type = type
         self.Ohm = Ohm
+        self.name = ""
         self.input_voltage = input_voltage
         self.output_voltage = self.Ohm * self.input_voltage
         self.image = image
@@ -183,11 +233,25 @@ class Resistance(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.topleft = (x,y)
         self.is_down = False
+        self.is_rotate = False
+        self.name_box = text_box(self.rect.x, self.rect.y, 50, 25, "Name")
+        self.Ohm_box = text_box(self.rect.right, self.rect.bottom, 50, 25, "Ohm")
+        if self.Ohm != 0:
+            self.Ohm_box.edit_text(str(self.Ohm))
+
     def update(self, screen, cursor):
         if self.is_down:
             self.rect.center = pygame.mouse.get_pos()
+        if cursor.colliderect(self.rect):
+            self.name_box.update(screen, cursor, False, self.rect.topleft)
+            self.Ohm_box.update(screen, cursor, False, (self.rect.right-30, self.rect.bottom-45))
         screen.blit(self.image, self.rect)
+        self.name = self.name_box.get_text()
+        self.Ohm = self.Ohm_box.get_text()
+
     def move_sprite(self,event,cursor):
+        self.name_box.text_update(event)
+        self.Ohm_box.text_update(event)
         if cursor.colliderect(self.rect):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if cursor.colliderect(self.rect):
@@ -195,12 +259,23 @@ class Resistance(pygame.sprite.Sprite):
                 self.is_down = True
             if event.type == pygame.MOUSEBUTTONUP:
                 self.is_down = False
+
     def rotate(self):
-        self.image = pygame.transform.rotate(self.image, 90)
+        if self.is_rotate:
+            self.image = pygame.transform.rotate(self.image, 270)
+            self.is_rotate = False
+        else:
+            self.image = pygame.transform.rotate(self.image, 90)
+            self.is_rotate = True
+
+    def set_name(self, name):
+        self.name = name
+        self.name_box.edit_text(self.name)
 
 class Batery(pygame.sprite.Sprite):
-    def __init__(self, voltage, image, x, y, scale_x, scale_y):
+    def __init__(self, voltage, image, x, y, scale_x, scale_y, type):
         pygame.sprite.Sprite.__init__(self)
+        self.type = type
         self.voltage = voltage
         self.image = image
         self.scale_x = scale_x
@@ -209,17 +284,97 @@ class Batery(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.topleft = (x,y)
         self.is_down = False
+        self.is_rotate = False
+        self.voltage_box = text_box(self.rect.x, self.rect.y, 25, 25, "V")
+        if voltage != 0:
+            self.voltage_box.edit_text(str(self.voltage))
     def update(self, screen, cursor):
         if self.is_down:
             self.rect.center = pygame.mouse.get_pos()
+        self.voltage_box.update(screen, cursor, False, self.rect.topleft)
         screen.blit(self.image, self.rect)
+        self.voltage = self.voltage_box.get_text()
     def move_sprite(self, event, cursor):
+        self.voltage_box.text_update(event)
         if cursor.colliderect(self.rect):
             if event.type == pygame.MOUSEBUTTONDOWN:
+                if cursor.colliderect(self.rect):
+                    self.rotate()
                 self.is_down = True
             if event.type == pygame.MOUSEBUTTONUP:
                 self.is_down = False
     def rotate(self):
-        return 0
+        if self.is_rotate:
+            self.image = pygame.transform.rotate(self.image, 270)
+            self.is_rotate = False
+        else:
+            self.image = pygame.transform.rotate(self.image, 90)
+            self.is_rotate = True
 
+class Circuito():
+    def __init__(self, screen):
+        self.Elements = pygame.sprite.Group()
+        self.Lines = pygame.sprite.Group()
+        self.IMG_F_P = pygame.image.load("./F_P.PNG")
+        self.IMG_R = pygame.image.load("./R.PNG")
+        self.screen = screen
 
+    def Save_Circuit(self):
+        count_txt = 0
+        content = os.listdir()
+        for archive in content:
+            if archive.endswith(".txt"):
+                count_txt += 1
+        time = datetime.now()
+        name = "SAVE_" + str(count_txt)
+        # name.split(" ", 10)
+        Archive = open(name + ".txt", "w")
+        for sprite in self.Elements:
+            info = ""
+            if sprite.type == "batery":
+                info += sprite.type + ","
+                info += str(sprite.voltage) + ","
+                info += str(sprite.rect.x) + ","
+                info += str(sprite.rect.y)
+                info += "\n"
+            if sprite.type == "resistance":
+                info += sprite.type + ","
+                info += str(sprite.name) + ","
+                info += str(sprite.Ohm) + ","
+                info += str(sprite.rect.x) + ","
+                info += str(sprite.rect.y)
+                info += "\n"
+            Archive.write(info)
+        for line in self.Lines:
+            info = ""
+            info += "line,"
+            info += str(line.line.x) + ","
+            info += str(line.line.y) + ","
+            info += str(line.line.width) + ","
+            info += str(line.line.height)
+            info += "\n"
+            Archive.write(info)
+        Archive.close()
+
+    def Load_Circuit(self, name):
+        self.Lines.empty()
+        self.Elements.empty()
+        Archive = open(name + ".txt", "r")
+        stri = Archive.read()
+        stri = stri.split("\n")
+        matrix = []
+        for line in stri:
+            matrix.append(line.split(","))
+        for element in matrix:
+            print(element)
+            if element[0] == 'batery':
+                batery = Batery(int(element[1]),self.IMG_F_P ,int(element[2]),int(element[3]), 100, 100, "batery")
+                self.Elements.add(batery)
+            if element[0] == 'resistance':
+                resistance = Resistance(float(element[2]), 0,self.IMG_R, int(element[3]),int(element[4]),100,100, "resistance")
+                resistance.set_name(element[1])
+                self.Elements.add(resistance)
+            if element[0] == 'line':
+                line = Line_(self.screen, (0, 0, 0), int(element[1]),int(element[2]),int(element[3]),int(element[4]))
+                self.Lines.add(line)
+        Archive.close()

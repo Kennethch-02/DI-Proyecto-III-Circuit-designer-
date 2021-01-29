@@ -1,7 +1,8 @@
 import sys
 import random
-
+from datetime import datetime
 import pygame
+import os
 from Clases import *
 
 ##Variables globales
@@ -46,17 +47,18 @@ def Indicaciones():
         pygame.display.update()
     pygame.quit()
     #Indicaciones()
+
+
 # /____________________________________________________________________________________________________________________
 # /_________________________________________VENTANA SIMULADOR__________________________________________________________
 def Simulador():
     global cursor1
     pygame.init()
-    WIDTH = 800
-    HEIGHT = 600
-    #Pantalla = Pantalla(WIDTH - 2, HEIGHT - 2)
+    WIDTH = 1000
+    HEIGHT = 800
     pantalla = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption('My Game')
-
+    Circuit = Circuito(pantalla)
     RED = (255, 0, 0)
     WHITE = (255, 255, 255)
     BLACK = (0, 0, 0)
@@ -65,29 +67,28 @@ def Simulador():
     BLUE = (0, 0, 255)
     YELLOW = (255, 255, 255)
 
-    boton_a2 = pygame.image.load("./boton_atras.gif")
-    boton_a3 = pygame.image.load("./boton_atras.gif")
+    boton_a2 = pygame.image.load("./boton_atras.jpg")
     IMG_B_Up = pygame.image.load("./arrow_up.png")
     IMG_B_up = pygame.image.load("./arrow_u.png")
+    IMG_Save = pygame.image.load("./boton_save.jpg")
     IMG_F_P = pygame.image.load("./F_P.PNG")
     IMG_R = pygame.image.load("./R.PNG")
     IMG_Cable = pygame.image.load("./C_Cable.png")
     IMG_Cable_A = pygame.image.load("./C_Cable_A.png")
-    boton_atras = boton(boton_a3, boton_a2, 590, 400)  # cambia la posicion del boton
-
-    Elements = pygame.sprite.Group()
+    boton_atras = boton(boton_a2, boton_a2, WIDTH-200,HEIGHT-50)  # cambia la posicion del boton
+    botton_save = boton(IMG_Save, IMG_Save, 25, HEIGHT-50)
+    botton_load = boton(IMG_Save, IMG_Save, 150, 150)
+    text_load = text_box(10, 150, 100, 25, "Archive")
     is_running = True
     is_down = False
     draw_line_h = False
     draw_line_v = False
-    Lines = pygame.sprite.Group()
     coord_line = (0,0)
     menu = Bar_Menu(0,0)
     pantalla.fill(GREEN)
     B_F_P = Dynamic_Button(IMG_F_P, IMG_F_P, 25, 25, 60,60, "B_F_P")
     B_Res = Dynamic_Button(IMG_R, IMG_R, 25, 25, 60, 60, "B_Res")
     B_Cable = Dynamic_Button(IMG_Cable, IMG_Cable_A, 25, 25, 60, 60, "B_Cable")
-
     menu.add_button(B_F_P)
     menu.add_button(B_Res)
     menu.add_button(B_Cable)
@@ -95,27 +96,32 @@ def Simulador():
     while is_running:
         pantalla.fill(WHITE)
         cursor1.update(pantalla)
-        Lines.update()
+        Circuit.Lines.update()
         menu.update(pantalla, cursor1)
-        Elements.update(pantalla, cursor1)
+        Circuit.Elements.update(pantalla, cursor1)
         boton_atras.update(pantalla, cursor1)
+        botton_save.update(pantalla, cursor1)
+        botton_load.update(pantalla, cursor1)
+        text_load.update(pantalla, cursor1, False, (20, 135))
         pygame.display.update()
         for event in pygame.event.get():
             menu.event(event, cursor1)
-            for s in Elements:
-                s.move_sprite(event, cursor1)
+            text_load.text_update(event)
+            for s in Circuit.Elements:
+                if cursor1.active_cable != True:
+                    s.move_sprite(event, cursor1)
             if event.type == pygame.QUIT:
                 is_running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 for s in menu.Botones:
                     if cursor1.colliderect(s.rect):
                         if s.get_type() == "B_F_P":
-                            batery = Batery(1, IMG_F_P,random.randint(0,800) , random.randint(100,600), 100, 100)
-                            Elements.add(batery)
+                            batery = Batery(0, IMG_F_P,random.randint(0,800) , random.randint(100,600), 100, 100, "batery")
+                            Circuit.Elements.add(batery)
                             cursor1.normal_cursor()
                         if s.get_type() == "B_Res":
-                            resistence = Resistance(1, 1, IMG_R, random.randint(50,700), random.randint(100,500), 100, 100)
-                            Elements.add(resistence)
+                            resistence = Resistance(1, 1, IMG_R, random.randint(50,700), random.randint(100,500), 100, 100, "resistance")
+                            Circuit.Elements.add(resistence)
                             cursor1.normal_cursor()
                         if s.get_type() == "B_Cable":
                             if cursor1.active_cable:
@@ -126,10 +132,15 @@ def Simulador():
                 if cursor1.active_cable:
                     coord_line = pygame.mouse.get_pos()
                     lines = Line_(pantalla, BLACK, coord_line[0], coord_line[1], 1,1)
-                    Lines.add(lines)
+                    Circuit.Lines.add(lines)
                 if cursor1.colliderect(boton_atras.rect):
                     cursor1.normal_cursor()
                     return Main()
+                if cursor1.colliderect(botton_save.rect):
+                    cursor1.normal_cursor()
+                    Circuit.Save_Circuit()
+                if cursor1.colliderect(botton_load.rect):
+                    Circuit.Load_Circuit(text_load.get_text())
             if event.type == pygame.MOUSEBUTTONUP:
                 is_down = False
                 if cursor1.active_cable:
@@ -146,8 +157,8 @@ def Simulador():
                     draw_line_v = True
                 if ((actual_coord[1] - coord_line[1]) < -10):
                     draw_line_v = True
-        if is_down:
-            print("")
+        #if is_down:
+
         if draw_line_h:
             coord = pygame.mouse.get_pos()
             if((coord[0]-coord_line[0])<0):
