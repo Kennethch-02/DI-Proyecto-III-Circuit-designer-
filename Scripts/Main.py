@@ -87,8 +87,8 @@ def Simulador():
     IMG_Cable_A = pygame.image.load("./C_Cable_A.png")
     boton_atras = boton(boton_a2, boton_a2, WIDTH-200,HEIGHT-50)  # cambia la posicion del boton
     botton_save = boton(IMG_Save, IMG_Save, 25, HEIGHT-50)
-    botton_load = boton(IMG_Load, IMG_Load, 150, 0)
-    text_load = text_box(20, 100, 150, 30, "Archive")
+    botton_load = boton(IMG_Load, IMG_Load, 0, 50)
+    text_load = text_box(10, 100, 150, 30, "Archive")
     is_running = True
     is_down = False
     draw_line_h = False
